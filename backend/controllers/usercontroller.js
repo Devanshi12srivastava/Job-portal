@@ -1,8 +1,8 @@
 import { User } from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-// import getDataUri from "../utils/datauri.js";
-// import cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
@@ -123,10 +123,10 @@ export const updateprofile = async (req, res) => {
   try {
     const { fullname, email, phonenumber, bio, skills } = req.body || {};
     const file = req.file;
-    const userId = req.id;
+    const userId = req.id; // make sure your auth middleware sets this
 
-    // 🔹 Find the user
-    let user = await User.findById(userId);
+    // 🔹 Find the user first
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -134,23 +134,31 @@ export const updateprofile = async (req, res) => {
       });
     }
 
-    // 🔹 Upload resume if provided
-    // if (file) {
-    //   const fileUri = getDataUri(file);
-    //   const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
-    //     resource_type: "auto",
-    //   });
+    // 🔹 Upload resume/file if provided
+    if (file) {
+      const fileUri = getDataUri(file);
+      const originalNameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
 
-    //   user.profile.resume = cloudResponse.secure_url;
-    //   user.profile.resumeOriginalName = file.originalname;
-    // }
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+        folder: "jobPortalProfiles",       // folder in Cloudinary
+        resource_type: "raw",              // for PDFs/DOCs
+        public_id: originalNameWithoutExt, // keep original filename
+        overwrite: true,                   // optional, replaces existing
+      });
 
-    // 🔹 Update user details
+      console.log("✅ Cloudinary Upload Response:", cloudResponse);
+
+      // Save URL and original name to MongoDB
+      user.profile.resume = cloudResponse.secure_url; // DO NOT append .pdf
+      user.profile.resumeOriginalName = file.originalname;
+    }
+
+    // 🔹 Update other profile fields
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (phonenumber) user.phonenumber = phonenumber;
     if (bio) user.profile.bio = bio;
-    if (skills) user.profile.skills = skills.split(",").map((s) => s.trim());
+    if (skills) user.profile.skills = skills.split(",").map(s => s.trim());
 
     await user.save();
 
@@ -168,6 +176,7 @@ export const updateprofile = async (req, res) => {
       message: "Profile updated successfully",
       user: updatedUser,
     });
+
   } catch (error) {
     console.error("❌ Update Profile Error:", error);
     return res.status(500).json({

@@ -60,7 +60,7 @@ const [filterCompany,setfilterCompany]=useState(companies);
               <TableRow key={company._id || company.name} className="text-left">
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src="https://img.freepik.com/premium-vector/minimalist-logo-design-any-corporate-brand-business-company_1253202-77511.jpg" />
+                    <AvatarImage src={company.logo} />
                   </Avatar>
                 </TableCell>
                 <TableCell>{company.name}</TableCell>

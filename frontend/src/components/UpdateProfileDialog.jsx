@@ -48,28 +48,27 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     if (input.file) {
       formData.append("file",input.file);
     }
-    try{
-      setloading(true)
-      const res = await axios.post(`${USER_API_END_POINT}/profile/update`,formData,{
-        headers:{
-          'Content-Type':'multipart/form-data'
-        },
-        withCredentials:true
-      });
-      if(res.data.success){
-        dispatch(setUser(res.data.user));
-        toast.success(res.data.message)
-      }
+   try {
+            setLoading(true);
+            const res = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                withCredentials: true
+            });
+            if (res.data.success) {
+                dispatch(setUser(res.data.user));
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+        } finally{
+            setLoading(false);
+        }
+        setOpen(false);
+        console.log(input);
     }
-    catch(error){
-      console.log(error);
-      toast.error(error.response.data.message)
-    } finally{
-      setloading(false)
-    }
-  setOpen(false)
-    console.log(input);
-  };
 
 
   return (

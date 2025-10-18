@@ -33,17 +33,18 @@ const filterData = [
   {
     filterType: "Industry",
     array: [
-      "Mernstack Developer",
+      "MERN Stack Developer",
        "Graduate Engineer",
-      "AI Engeerier",
-      "Education",
+      "AI/ML Engineer",
+      "Software Develoer",
       "Frontend Developer",
       "Full Stack Developer",
-      "Telecommunications",
-      "Media",
-      "Marketing",
-      "Real Estate",
+      "Payment Systems Engineer",
+     " Cloud Engineer",
+      " Product Manager",
+      "UI/UX Engineer",
       "DevOps Developer",
+      " Cybersecurity Analyst",
     ],
   },
   {
@@ -90,7 +91,7 @@ const FilterCard = () => {
 
   return (
     <div className="w-full">
-      <h1 className="mt-2 text-2xl font-bold text-red-500 text-left">
+      <h1 className="mt-2 text-lg font-bold text-red-800 text-left">
         {" "}
         Filter Jobs
       </h1>
@@ -105,7 +106,7 @@ const FilterCard = () => {
               const itemId = `r${index}-${idx}`;
               return (
                 <div key={itemId} className="flex items-center space-x-2 my-3">
-                  <RadioGroupItem value={item} id={itemId} />
+                  <RadioGroupItem   className="w-5 h-5 border-2 border-purple-200 rounded-full relative flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-400" value={item} id={itemId} />
                   <Label htmlFor={itemId}>{item}</Label>
                 </div>
               );

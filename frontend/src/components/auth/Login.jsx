@@ -6,82 +6,70 @@ import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading,setUser} from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 
 const Login = () => {
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-    role: "",
-  });
-  const {loading,user}=useSelector(store=>store.auth)
+  const [input, setInput] = useState({ email: "", password: "", role: "" });
+  const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
-
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-        headers: {
-          "content-Type": "application/json",
-        },
+        headers: { "content-Type": "application/json" },
         withCredentials: true,
       });
       if (res.data.success) {
-        dispatch(setUser(res.data.user))
-        console.log(setUser);
-           console.log("User received from backend:", res.data.user);
+        dispatch(setUser(res.data.user));
         toast.success(res.data.message);
         navigate("/");
       }
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong");
-    }
-    finally{
+    } finally {
       dispatch(setLoading(false));
     }
   };
 
-  useEffect(()=>{
-    if(user){
-      navigate('/');
-    }
-  },[]);
+  useEffect(() => {
+    if (user) navigate("/");
+  }, []);
 
   return (
     <div>
       <Navbar />
-       <h1 className="text-purple-800 text-3xl font-bold my-8"> Login to<span className="text-3xl font-bold text-red-500 my-8 "> Hire Flow !</span></h1>
-      <div className="flex items-center justify-center max-w-7xl mx-auto px-3 sm:px-4">
+      <h1 className="text-purple-800 text-2xl sm:text-3xl font-bold my-6 sm:my-8 text-center">
+        Login to <span className="text-red-500">Hire Flow!</span>
+      </h1>
+      <div className="flex items-center justify-center max-w-7xl mx-auto px-4 sm:px-6">
         <form
           onSubmit={submitHandler}
-          className="w-full sm:w-3/4 md:w-1/2 border border-gray-300 bg-gray shadow-md rounded-md p-4 my-10"
+          className="w-full max-w-[320px] sm:max-w-md md:max-w-lg border border-gray-300 bg-gray shadow-md rounded-md p-4 sm:p-6 my-6"
         >
-          
-
           {/* Email */}
           <div className="my-2 flex flex-col items-start">
             <Label className="text-blue-900 font-medium text-base sm:text-lg md:text-xl mb-1">
               Email
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="email"
               name="email"
               value={input.email}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
@@ -91,18 +79,18 @@ const Login = () => {
               Password
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="password"
               name="password"
               value={input.password}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
-          {/* Role & Profile */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:m mt-4">
-            <RadioGroup className="flex flex-col sm:flex-row items-start sm:items-center justify-center md:justify-start gap-3">
+          {/* Role */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
+            <RadioGroup className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
@@ -114,7 +102,7 @@ const Login = () => {
                 />
                 <Label htmlFor="option-one">Student</Label>
               </div>
-              <div className="flex items-center space-x-2 ">
+              <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
                   name="role"
@@ -127,16 +115,25 @@ const Login = () => {
               </div>
             </RadioGroup>
           </div>
-{
-  loading ?<Button className="w-full my-4"> <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please wait </Button>: <Button type="submit" className="w-[380px] my-5 text-sm sm:text-base bg-fuchsia-700 hover:bg-fuchsia-500 cursor-pointer">
-            Login
-          </Button>
 
-}
-         
-          <p className="text-center text-sm">
-            Do not have account then?{" "}
-            <Link to="/signup" className="text-blue-800 font-medium ">
+          {/* Submit Button */}
+          {loading ? (
+            <Button className="w-full my-4 flex justify-center items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="w-full my-4 text-sm sm:text-base bg-fuchsia-700 hover:bg-fuchsia-500 cursor-pointer"
+            >
+              Login
+            </Button>
+          )}
+
+          <p className="text-center text-sm mt-2">
+            Do not have account?{" "}
+            <Link to="/signup" className="text-blue-800 font-medium">
               SignUp
             </Link>
           </p>

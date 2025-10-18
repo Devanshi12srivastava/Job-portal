@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
-
-import axios from 'axios'
+import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { USER_API_END_POINT } from "@/utils/constant";
@@ -23,10 +22,10 @@ const Signup = () => {
     role: "",
     file: "",
   });
-    const {loading,user}=useSelector(store=>store.auth)
-const navigate = useNavigate();
+  const { loading, user } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-   const dispatch=useDispatch()
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -35,65 +34,60 @@ const navigate = useNavigate();
   };
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
-const formData=new FormData();
-formData.append("fullname",input.fullname);
-formData.append("email",input.email);
-formData.append("phonenumber",input.phonenumber);
-formData.append("password",input.password);
-formData.append("role",input.role);
-if(input.file){
-  formData.append("file",input.file);
-}
+    const formData = new FormData();
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phonenumber", input.phonenumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
 
     try {
-       dispatch(setLoading(true));
-      const res= await axios.post(`${USER_API_END_POINT}/register`,formData,{
-        headers:{
-          "content-Type":"multipart/form-data"
-        },
-        withCredentials:true,
+      dispatch(setLoading(true));
+      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+        headers: { "content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
-      if(res.data.success){
+      if (res.data.success) {
         toast.success(res.data.message);
-        navigate("/login")
+        navigate("/login");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    } finally {
+      dispatch(setLoading(false));
     }
-    finally{
-          dispatch(setLoading(false));
-        }
   };
 
-    useEffect(()=>{
-      if(user){
-        navigate('/');
-      }
-    },[]);
+  useEffect(() => {
+    if (user) navigate("/");
+  }, []);
+
   return (
     <div>
       <Navbar />
-      <h1 className="text-purple-800 text-3xl font-bold py-2"> Signup to<span className="text-3xl font-bold text-red-500 "> Hire Flow ! </span></h1>
-      <div className="flex items-center justify-center max-w-7xl mx-auto px-3 sm:px-4">
+      <h1 className="text-purple-800 text-2xl sm:text-3xl font-bold py-2 text-center">
+        Signup to <span className="text-red-500">Hire Flow!</span>
+      </h1>
+      <div className="flex items-center justify-center max-w-7xl mx-auto px-4 sm:px-6">
         <form
           onSubmit={submitHandler}
-          className="w-full sm:w-3/4 md:w-1/2 border border-gray-300 bg-gray shadow-md  rounded-md p-4 my-10"
+          className="w-full max-w-[320px] sm:max-w-md md:max-w-lg border border-gray-300 bg-gray shadow-md rounded-md p-4 sm:p-6 my-6"
         >
-          
-
           {/* Full Name */}
           <div className="my-2 flex flex-col items-start">
             <Label className="text-blue-900 font-medium text-base sm:text-lg md:text-xl mb-1">
               Full Name
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="text"
               name="fullname"
               value={input.fullname}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
@@ -103,12 +97,12 @@ if(input.file){
               Email
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="text"
               name="email"
               value={input.email}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
@@ -118,12 +112,12 @@ if(input.file){
               Phone Number
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="number"
               name="phonenumber"
               value={input.phonenumber}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
@@ -133,18 +127,18 @@ if(input.file){
               Password
             </Label>
             <Input
-              className="w-full max-w-[280px] sm:max-w-[300px] md:max-w-[380px] my-2 text-sm"
+              className="w-full my-2 text-sm"
               type="password"
               name="password"
               value={input.password}
               onChange={changeEventHandler}
-              placeholder="enter"
+              placeholder="Enter"
             />
           </div>
 
           {/* Role & Profile */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:m mt-4">
-            <RadioGroup className="flex flex-col sm:flex-row items-start sm:items-center justify-center md:justify-start gap-3">
+          <div className="flex flex-col sm:flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
+            <RadioGroup className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
@@ -156,7 +150,7 @@ if(input.file){
                 />
                 <Label htmlFor="option-one">Student</Label>
               </div>
-              <div className="flex items-center space-x-2 ">
+              <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
                   name="role"
@@ -169,7 +163,7 @@ if(input.file){
               </div>
             </RadioGroup>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-2 sm:mt-0">
               <Label>Profile</Label>
               <Input
                 accept="image/*"
@@ -180,15 +174,23 @@ if(input.file){
               />
             </div>
           </div>
-{
-  loading ?<Button className="w-full my-4"> <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please wait </Button>: <Button type="submit" className="  bg-fuchsia-700  w-[380px] my-5 text-sm  hover:bg-fuchsia-500 cursor-pointer sm:text-base">
-           Signup
-          </Button>
 
-}
-          {/* <Button className="w-full my-5 text-sm sm:text-base">Signup</Button> */}
+          {/* Submit Button */}
+          {loading ? (
+            <Button className="w-full my-4 flex justify-center items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="w-full my-4 text-sm sm:text-base bg-fuchsia-700 hover:bg-fuchsia-500 cursor-pointer"
+            >
+              Signup
+            </Button>
+          )}
 
-          <p className="text-center text-sm">
+          <p className="text-center text-sm mt-2">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-800 font-medium">
               Login

@@ -129,9 +129,9 @@ const Navbar = () => {
 
   <div className="flex flex-col sm:flex-col my-2 sm:my-3 text-gray-700 text-sm gap-2 sm:gap-3 items-center sm:items-start">
     {role === "student" && (
-      <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-purple-600 transition-colors duration-200">
+      <div className="flex w-fit items-center gap-2  hover:text-purple-600 transition-colors duration-200 ">
         <User2 size={16} className="text-purple-500" />
-        <Button variant="link" className="p-0 text-sm font-medium">
+        <Button variant="link" className="p-0 text-sm font-medium hover:cursor-pointer">
           <Link to="/profile">View Profile</Link>
         </Button>
       </div>
@@ -142,7 +142,7 @@ const Navbar = () => {
       <Button
         onClick={logoutHandler}
         variant="link"
-        className="p-0 text-sm font-medium"
+        className="p-0 text-sm font-medium hover:cursor-pointer"
       >
         Logout
       </Button>

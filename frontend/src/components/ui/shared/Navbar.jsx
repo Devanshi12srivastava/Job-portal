@@ -9,6 +9,7 @@ import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
+import InitialAvatar from './InitialAvatar';
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
@@ -98,24 +99,32 @@ const Navbar = () => {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                    className="rounded-full object-cover"
-                  />
-                </Avatar>
+                <Avatar>
+  {user?.profile?.profilePhoto ? (
+    <AvatarImage
+      src={user.profile.profilePhoto}
+      alt={user.fullname}
+      className="rounded-full object-cover"
+    />
+  ) : (
+    <InitialAvatar name={user.fullname} size={40} />
+  )}
+</Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-64 sm:w-80">
                 <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-purple-200 border border-gray-300 rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 h-auto sm:h-46">
   <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-center mb-2 sm:mb-3 text-center sm:text-left">
-    <Avatar className="w-14 h-14 ring-2 ring-purple-400 shadow-md mx-auto sm:mx-2">
-      <AvatarImage
-        src="https://github.com/shadcn.png"
-        alt="@shadcn"
-        className="rounded-full object-cover"
-      />
-    </Avatar>
+    <Avatar>
+  {user?.profile?.profilePhoto ? (
+    <AvatarImage
+      src={user.profile.profilePhoto}
+      alt={user.fullname}
+      className="rounded-full object-cover"
+    />
+  ) : (
+    <InitialAvatar name={user.fullname} size={40} />
+  )}
+</Avatar>
 
     <div className="overflow-hidden">
       <h4 className="font-semibold text-base sm:text-lg text-gray-800 truncate">
@@ -137,7 +146,7 @@ const Navbar = () => {
       </div>
     )}
 
-    <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-red-600 transition-colors duration-200 cursor-pointer">
+    <div className="flex w-fit items-center gap-2  hover:text-red-600 transition-colors duration-200 cursor-pointer">
       <LogOut size={16} className="text-red-500" />
       <Button
         onClick={logoutHandler}

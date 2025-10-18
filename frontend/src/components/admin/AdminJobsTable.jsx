@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, Eye, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 const AdminJobsTable = () => {
   const companies = useSelector((store) => store.company?.companies ?? []);
@@ -43,6 +44,7 @@ const AdminJobsTable = () => {
         <TableCaption>A list of your recent posted jobs</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead  className="text-lg">Logo</TableHead>
             <TableHead className="text-lg">Company Name</TableHead>
             <TableHead  className="text-lg">Role</TableHead>
             <TableHead  className="text-lg">Date</TableHead>
@@ -60,6 +62,11 @@ const AdminJobsTable = () => {
           ) : (
             filterJobs.map((job) => (
               <TableRow key={job._id}>
+                <TableCell>
+                  <Avatar>
+                    <AvatarImage src={job?.company?.logo} />
+                  </Avatar>
+                </TableCell>
                 <TableCell className="text-left">{job?.company?.name}</TableCell>
                 <TableCell className="text-left">{job?.title}</TableCell>
                 <TableCell className="text-left">{job?.createdAt?.split("T")[0] || "N/A"}</TableCell>
