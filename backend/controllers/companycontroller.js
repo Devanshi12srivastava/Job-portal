@@ -2,6 +2,7 @@ import { Company } from "../models/companymodel.js";
 
 
 export const registerCompany = async (req, res) => {
+    console.log("REQ.BODY:", req.body);
     try {
         const { companyName } = req.body;
         if (!companyName) {
@@ -51,6 +52,8 @@ export const getCompany = async (req, res) => {
 }
 // get company by id
 export const getCompanyById = async (req, res) => {
+    
+
     try {
         const companyId = req.params.id;
         const company = await Company.findById(companyId);

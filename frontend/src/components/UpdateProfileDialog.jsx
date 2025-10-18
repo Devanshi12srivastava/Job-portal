@@ -11,7 +11,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import axios from "axios";
@@ -49,6 +49,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
       formData.append("file",input.file);
     }
     try{
+      setloading(true)
       const res = await axios.post(`${USER_API_END_POINT}/profile/update`,formData,{
         headers:{
           'Content-Type':'multipart/form-data'
@@ -63,6 +64,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     catch(error){
       console.log(error);
       toast.error(error.response.data.message)
+    } finally{
+      setloading(false)
     }
   setOpen(false)
     console.log(input);
@@ -70,14 +73,14 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
 
   return (
-    <div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+    <div >
+      <Dialog open={open} onOpenChange={setOpen} >
+        <DialogContent className="bg-gradient-to-r from-purple-100 via-pink-100 to-purple-200 p-6 rounded-xl shadow-lg">
           <DialogHeader>
             <DialogTitle>Update Profile</DialogTitle>
           </DialogHeader>
-          <form onSubmit={submitHandler}>
-            <div className="grig gap-4 py-4">
+          <form onSubmit={submitHandler} >
+            <div className="grig gap-4 py-4 ">
               <div className="grid grid-cols-4 item-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
@@ -165,7 +168,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             ) : (
               <Button
                 type="submit"
-                className="w-[380px] my-5 text-sm sm:text-base"
+                className="w-[380px] my-5 text-sm  bg-fuchsia-800 sm:text-base hover:cursor-pointer"
               >
                 Update
               </Button>

@@ -1,0 +1,100 @@
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Edit2, Eye, MoreHorizontal } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+const AdminJobsTable = () => {
+  const companies = useSelector((store) => store.company?.companies ?? []);
+  const searchCompanyByText = useSelector(
+    (store) => store.company?.searchCompanyByText ?? ""
+  );
+  const { allAdminjobs = [] } = useSelector((store) => store.job);
+  const navigate = useNavigate();
+
+  const [filterJobs, setFilterJobs] = useState(allAdminjobs);
+
+  useEffect(() => {
+    const filteredJobs = allAdminjobs.filter((job) => {
+      if (!searchCompanyByText) return true;
+      return (
+        job?.company?.name
+          ?.toLowerCase()
+          .includes(searchCompanyByText.toLowerCase()) ||
+        job?.title?.toLowerCase().includes(searchCompanyByText.toLowerCase())
+      );
+    });
+    setFilterJobs(filteredJobs);
+  }, [allAdminjobs, searchCompanyByText]);
+
+  return (
+    <div>
+      <Table>
+        <TableCaption>A list of your recent posted jobs</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-lg">Company Name</TableHead>
+            <TableHead  className="text-lg">Role</TableHead>
+            <TableHead  className="text-lg">Date</TableHead>
+            <TableHead className="text-right text-lg">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {filterJobs.length <= 0 ? (
+            <TableRow>
+              <TableCell colSpan="4" className="text-center">
+                No Jobs Found
+              </TableCell>
+            </TableRow>
+          ) : (
+            filterJobs.map((job) => (
+              <TableRow key={job._id}>
+                <TableCell className="text-left">{job?.company?.name}</TableCell>
+                <TableCell className="text-left">{job?.title}</TableCell>
+                <TableCell className="text-left">{job?.createdAt?.split("T")[0] || "N/A"}</TableCell>
+                <TableCell className="text-right cursor-pointer">
+                  <Popover>
+                    <PopoverTrigger>
+                      <MoreHorizontal />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-32">
+                      {/* <div
+                        onClick={() => navigate(`/admin/jobs/${job._id}`)}
+                        className="flex items-center gap-2 w-fit cursor-pointer"
+                      >
+                        <Edit2 className="w-4 cursor-pointer" />
+                        <span>Edit</span>
+                      </div> */}
+                      <div
+                        onClick={() =>
+                          navigate(`/admin/jobs/${job._id}/applicants`)
+                        }
+                        className="flex items-center w-fit gap-2 cursor-pointer mt-2"
+                      >
+                        <Eye calcMode="w-4" />
+                        <span>Applicants</span>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+export default AdminJobsTable;

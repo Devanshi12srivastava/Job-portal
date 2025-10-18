@@ -6,7 +6,8 @@ export const postJob = async (req, res) => {
         const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
         const userId = req.id;
 
-        if (!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
+        if (!title || !description || !requirements || !salary || !location || !jobType ||   experience === undefined ||   // <--- allow 0
+    experience === null || !position || !companyId) {
             return res.status(400).json({
                 message: "Something is missing.",
                 success: false
@@ -76,7 +77,7 @@ export const getJobById = async (req, res) => {
         return res.status(200).json({ job, success: true });
     } catch (error) {
         console.log(error);
-    }
+    } 
 }
 // admin kitne job create kra hai abhi tk
 export const getAdminJobs = async (req, res) => {
@@ -99,4 +100,33 @@ export const getAdminJobs = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+};
+export const applyJob = async (req, res) => {
+  try {
+    const { jobId, userEmail, userName } = req.body;
+
+    // (Optional) Save application to DB
+    // await JobApplication.create({ jobId, userEmail, userName });
+
+    // Send confirmation email
+    const subject = "Job Application Received";
+    const html = `
+      <h2>Hello ${userName},</h2>
+      <p>Thank you for applying for the job (ID: <b>${jobId}</b>).</p>
+      <p>Our team will review your profile and contact you soon.</p>
+    `;
+
+    await sendEmail(userEmail, subject, html);
+
+    return res.status(200).json({
+      success: true,
+      message: "Application submitted and email sent successfully!",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while sending email.",
+    });
+  }
 };

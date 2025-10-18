@@ -20,13 +20,13 @@ const userSchema= new mongoose.Schema({
     role:{
         type:String,
         enum:['student','recruiter'],
-        requuired:true
+        required:true
     },
     profile:{
         bio:{type:String},
         skills:[{type:String}],
         resume:{type:String},
-        resumeOriginalNmae:{type:String},
+        resumeOriginalName:{type:String},
         Company:{type:mongoose.Schema.Types.ObjectId,ref:'company'},
         profilePhoto:{
             type:String,

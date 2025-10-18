@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../ui/shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -19,7 +19,7 @@ const Login = () => {
     password: "",
     role: "",
   });
-  const {loading}=useSelector(store=>store.auth)
+  const {loading,user}=useSelector(store=>store.auth)
   const navigate = useNavigate();
   const dispatch=useDispatch()
   const changeEventHandler = (e) => {
@@ -40,6 +40,7 @@ const Login = () => {
       if (res.data.success) {
         dispatch(setUser(res.data.user))
         console.log(setUser);
+           console.log("User received from backend:", res.data.user);
         toast.success(res.data.message);
         navigate("/");
       }
@@ -51,17 +52,23 @@ const Login = () => {
       dispatch(setLoading(false));
     }
   };
+
+  useEffect(()=>{
+    if(user){
+      navigate('/');
+    }
+  },[]);
+
   return (
     <div>
       <Navbar />
+       <h1 className="text-purple-800 text-3xl font-bold my-8"> Login to<span className="text-3xl font-bold text-red-500 my-8 "> Hire Flow !</span></h1>
       <div className="flex items-center justify-center max-w-7xl mx-auto px-3 sm:px-4">
         <form
           onSubmit={submitHandler}
-          className="w-full sm:w-3/4 md:w-1/2 border border-gray-300 rounded-md p-4 my-10"
+          className="w-full sm:w-3/4 md:w-1/2 border border-gray-300 bg-gray shadow-md rounded-md p-4 my-10"
         >
-          <h1 className="font-bold text-xl mb-5 text-center md:text-left">
-            Login
-          </h1>
+          
 
           {/* Email */}
           <div className="my-2 flex flex-col items-start">
@@ -121,7 +128,7 @@ const Login = () => {
             </RadioGroup>
           </div>
 {
-  loading ?<Button className="w-full my-4"> <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please wait </Button>: <Button type="submit" className="w-[380px] my-5 text-sm sm:text-base">
+  loading ?<Button className="w-full my-4"> <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please wait </Button>: <Button type="submit" className="w-[380px] my-5 text-sm sm:text-base bg-fuchsia-700 hover:bg-fuchsia-500 cursor-pointer">
             Login
           </Button>
 
@@ -129,7 +136,7 @@ const Login = () => {
          
           <p className="text-center text-sm">
             Do not have account then?{" "}
-            <Link to="/signup" className="text-blue-800 font-medium">
+            <Link to="/signup" className="text-blue-800 font-medium ">
               SignUp
             </Link>
           </p>

@@ -1,107 +1,161 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "../button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { LogOut, User2 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { USER_API_END_POINT } from "@/utils/constant";
+import { setUser } from "@/redux/authSlice";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+       toast.error(error.response?.data?.message || "Logout failed. Please try again.");  
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const role = user?.role || "student";
 
   return (
-    <div className=" w-full">
-      <div className="flex flex-wrap items-center justify-between mx-auto max-w-7xl px-4 py-2  sm:py-2">
-        {/* Left: Logo */}
+    <div className="-m-4">
+      <div className="flex flex-wrap items-center justify-between mx-auto max-w-7xl h-auto px-4 sm:px-6 md:h-16">
+        {/* Logo */}
         <div className="w-full sm:w-auto text-center sm:text-left mb-2 sm:mb-0">
-          <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-purple-800 to-pink-600 bg-clip-text text-transparent">
-            Hire<span className="text-[#f80237] drop-shadow-md">Flow</span>
+          <h1 className="text-3xl sm:text-4xl font-bold text-purple-900">
+            Hire<span className="text-[#F83002]">Flow</span>
           </h1>
         </div>
 
-        {/* Right: Navigation & User */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-end gap-4 sm:gap-8 md:gap-12 w-full sm:w-auto">
-          {/* Navigation Links */}
-          <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 font-medium text-sm sm:text-base">
-            {["Home", "Jobs", "Browse"].map((link) => (
-              <li
-                key={link}
-                className="text-lg sm:text-xl font-semibold text-purple-800 hover:text-purple-600 transition duration-300 relative"
-              >
-                <Link
-                  to={link === "Home" ? "/" : link.toLowerCase()}
-                  className="after:block  after:bg-purple-800 after:transition-all hover:after:w-full"
-                >
-                  {link}
-                </Link>
-              </li>
-            ))}
+        {/* Links + Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 w-full sm:w-auto">
+          <ul className="flex flex-col sm:flex-row font-medium items-center gap-3 sm:gap-6">
+            {role === "recruiter" ? (
+              <>
+                <li>
+                  <Link to="/admin/companies" className="text-2xl font-semibold text-fuchsia-700">
+                    Companies
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/admin/jobs" className="text-2xl font-semibold text-fuchsia-700">
+                    Jobs
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/" className="text-2xl font-semibold text-fuchsia-700 ">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/jobs" className="text-2xl font-semibold text-fuchsia-700 ">
+                    Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/browse" className="text-2xl font-semibold text-fuchsia-700 ">
+                    Browse
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
 
-          {/* Login / Signup or User Popover */}
+          {/* Auth Buttons */}
           {!user ? (
-            <div className="flex flex-wrap items-center justify-center gap-2 mt-2 sm:mt-0">
-              <Link to="/login">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-4 py-2 rounded-md hover: transition-all duration-300 text-sm cursor-pointer sm:text-base">
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <Link to="/login" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm cursor-pointer">
                   Login
                 </Button>
               </Link>
-              <Link to="/signup">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-70 hover:to-pink-500 text-white px-4 py-2 rounded-md  hover: transition-all duration-300 text-sm cursor-pointer sm:text-base">
-                  SignUp
+              <Link to="/signup" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm cursor-pointer">
+                  Signup
                 </Button>
               </Link>
             </div>
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="h-9 w-9 sm:h-10 sm:w-10 rounded-full cursor-pointer hover:ring-2 hover:ring-purple-500 transition-all duration-200">
+                <Avatar className="cursor-pointer">
                   <AvatarImage
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
                     className="rounded-full object-cover"
                   />
-                  <AvatarFallback>DP</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
+              <PopoverContent className="w-64 sm:w-80">
+                <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-purple-200 border border-gray-300 rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 h-auto sm:h-46">
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-center mb-2 sm:mb-3 text-center sm:text-left">
+    <Avatar className="w-14 h-14 ring-2 ring-purple-400 shadow-md mx-auto sm:mx-2">
+      <AvatarImage
+        src="https://github.com/shadcn.png"
+        alt="@shadcn"
+        className="rounded-full object-cover"
+      />
+    </Avatar>
 
-              <PopoverContent className="w-72 sm:w-80 py-4 mx-2 sm:mx-3.5 rounded-lg shadow-lg border border-gray-100">
-                <div className="flex gap-4 items-center mb-4">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                      className="rounded-full object-cover"
-                    />
-                    <AvatarFallback>DP</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h4 className="font-medium text-gray-800">Job Portal</h4>
-                    <p className="text-sm text-gray-500">Welcome back!</p>
-                  </div>
-                </div>
+    <div className="overflow-hidden">
+      <h4 className="font-semibold text-base sm:text-lg text-gray-800 truncate">
+        {user?.fullname}
+      </h4>
+      <p className="text-xs sm:text-sm text-gray-600 truncate">
+        {user?.profile?.bio}
+      </p>
+    </div>
+  </div>
 
-                <div className="flex flex-col gap-3 text-gray-600">
-                  <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-purple-700 transition">
-                    <User2 />
-                    <Button variant="link" className="text-sm sm:text-base">
-                      <Link to="/profile">View Profile</Link>
-                    </Button>
-                  </div>
-                  <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-purple-700 transition">
-                    <LogOut />
-                    <Button variant="link" className="text-sm sm:text-base">
-                      Logout
-                    </Button>
-                  </div>
-                </div>
+  <div className="flex flex-col sm:flex-col my-2 sm:my-3 text-gray-700 text-sm gap-2 sm:gap-3 items-center sm:items-start">
+    {role === "student" && (
+      <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-purple-600 transition-colors duration-200">
+        <User2 size={16} className="text-purple-500" />
+        <Button variant="link" className="p-0 text-sm font-medium">
+          <Link to="/profile">View Profile</Link>
+        </Button>
+      </div>
+    )}
+
+    <div className="flex w-fit items-center gap-2 cursor-pointer hover:text-red-600 transition-colors duration-200 cursor-pointer">
+      <LogOut size={16} className="text-red-500" />
+      <Button
+        onClick={logoutHandler}
+        variant="link"
+        className="p-0 text-sm font-medium"
+      >
+        Logout
+      </Button>
+    </div>
+  </div>
+</div>
+
+
               </PopoverContent>
             </Popover>
           )}
         </div>
       </div>
-
-      <hr className="border-t border-gray-300 mt-2" />
     </div>
   );
 };
