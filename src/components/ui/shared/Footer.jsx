@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
           {/* Brand Section */}
           <div>
-            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-purple-800 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-extrabold bg-linear-to-r from-purple-800 to-pink-600 bg-clip-text text-transparent">
               Hire<span className="text-[#f83002]">Flow</span>
             </h2>
             <p className="text-gray-600 text-sm mt-3 leading-relaxed">

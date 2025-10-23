@@ -85,12 +85,12 @@ const Navbar = () => {
           {!user ? (
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
               <Link to="/login" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm">
+                <Button className="w-full sm:w-auto bg-linear-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm">
                   Login
                 </Button>
               </Link>
               <Link to="/signup" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm">
+                <Button className="w-full sm:w-auto bg-linear-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500 text-white px-3 py-2 rounded-md transition-all duration-300 text-sm">
                   Signup
                 </Button>
               </Link>
@@ -107,7 +107,7 @@ const Navbar = () => {
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-64 sm:w-80">
-                <div className="bg-gradient-to-r from-purple-100 via-pink-100 to-purple-200 border border-gray-300 rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 h-auto sm:h-46">
+                <div className="bg-linear-to-r from-purple-100 via-pink-100 to-purple-200 border border-gray-300 rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 h-auto sm:h-46">
   <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-center mb-2 sm:mb-3 text-center sm:text-left">
     <Avatar className="w-14 h-14 ring-2 ring-purple-400 shadow-md mx-auto sm:mx-2">
       <AvatarImage
