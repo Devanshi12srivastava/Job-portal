@@ -1,5 +1,5 @@
 import './App.css'
-import Navbar from './components/ui/shared/navbar'
+import Navbar from './components/ui/shared/Navbar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
