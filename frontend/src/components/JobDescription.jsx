@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Briefcase, MapPin, DollarSign, Users, Calendar } from "lucide-react";
 
+
 const JobDescription = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { id: jobId } = useParams();
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
@@ -22,9 +23,12 @@ const JobDescription = () => {
     try {
       if (!jobId) return toast.error("Job ID not found.");
 
-      const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (res.data.success) {
         setApplied(true);
@@ -44,11 +48,15 @@ const JobDescription = () => {
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, { withCredentials: true });
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
+          withCredentials: true,
+        });
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
           setApplied(
-            res.data.job.applications?.some((app) => app.applicant === user?._id) || false
+            res.data.job.applications?.some(
+              (app) => app.applicant === user?._id
+            ) || false
           );
         }
       } catch (error) {
@@ -62,8 +70,16 @@ const JobDescription = () => {
     <div className="max-w-5xl mx-auto my-10 px-4">
       {/* Title + Apply Button */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <Button variant="outline" className="cursor-pointer" onClick={()=>navigate('/jobs')}>Back</Button>
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          onClick={() => navigate("/jobs")}
+        >
+          Back
+        </Button>
+
         <h1 className="text-3xl font-bold text-red-800">{singleJob?.title}</h1>
+        
         <Button
           onClick={isApplied ? null : applyJobHandler}
           disabled={isApplied}
@@ -76,12 +92,18 @@ const JobDescription = () => {
           {isApplied ? "Already Applied" : "Apply Now"}
         </Button>
       </div>
-
+      
       {/* Badges */}
       <div className="flex flex-wrap gap-2 mb-8">
-        <Badge className="bg-purple-100 text-purple-800 font-semibold">{singleJob?.position} Position</Badge>
-        <Badge className="bg-red-100 text-red-600 font-semibold">{singleJob?.jobType}</Badge>
-        <Badge className="bg-green-100 text-green-900 font-semibold">{singleJob?.salary} LPA</Badge>
+        <Badge className="bg-purple-100 text-purple-800 font-semibold">
+          {singleJob?.position} Position
+        </Badge>
+        <Badge className="bg-red-100 text-red-600 font-semibold">
+          {singleJob?.jobType}
+        </Badge>
+        <Badge className="bg-green-100 text-green-900 font-semibold">
+          {singleJob?.salary} LPA
+        </Badge>
       </div>
 
       {/* Job Info */}
@@ -91,9 +113,11 @@ const JobDescription = () => {
           <span className="font-medium ">Role:</span> {singleJob?.title}
         </div>
         <div className="mt-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2 text-left">Job Description</h2>
-        <p className="text-gray-700 text-left">{singleJob?.description}</p>
-      </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2 text-left">
+            Job Description
+          </h2>
+          <p className="text-gray-700 text-left">{singleJob?.description}</p>
+        </div>
         <div className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-gray-500" />
           <span className="font-medium">Location:</span> {singleJob?.location}
@@ -104,20 +128,22 @@ const JobDescription = () => {
         </div>
         <div className="flex items-center gap-2">
           <Briefcase className="w-5 h-5 text-gray-500" />
-          <span className="font-medium">Experience:</span> {singleJob?.experienceLevel} Years
+          <span className="font-medium">Experience:</span>{" "}
+          {singleJob?.experienceLevel} Years
         </div>
         <div className="flex items-center gap-2">
           <Users className="w-5 h-5 text-gray-500" />
-          <span className="font-medium">Applicants:</span> {singleJob?.applications?.length || 0}
+          <span className="font-medium">Applicants:</span>{" "}
+          {singleJob?.applications?.length || 0}
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="w-5 h-5 text-gray-500" />
-          <span className="font-medium">Posted On:</span> {singleJob?.createdAt?.split("T")[0]}
+          <span className="font-medium">Posted On:</span>{" "}
+          {singleJob?.createdAt?.split("T")[0]}
         </div>
       </div>
 
       {/* Description */}
-      
     </div>
   );
 };

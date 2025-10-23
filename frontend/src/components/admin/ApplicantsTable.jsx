@@ -55,10 +55,10 @@ const ApplicantsTable = () => {
           {applicants &&
             applicants?.applications?.map((item) => (
               <tr key={item._id}>
-                <TableCell>{item?.applicant?.fullname}</TableCell>
-                <TableCell>{item?.applicant?.email}</TableCell>
-                <TableCell>{item?.applicant?.phoneNumber}</TableCell>
-                <TableCell>
+                <TableCell className="text-left">{item?.applicant?.fullname}</TableCell>
+                <TableCell className="text-left">{item?.applicant?.email}</TableCell>
+                <TableCell className="text-left">{item?.applicant?.phonenumber}</TableCell>
+                <TableCell className="text-left">
                   {item.applicant?.profile?.resume ? (
                     <a
                       className="text-blue-600 cursor-pointer"
@@ -72,7 +72,12 @@ const ApplicantsTable = () => {
                     <span>NA</span>
                   )}
                 </TableCell>
-                <TableCell>{item?.applicant.createdAt.split("T")[0]}</TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.createdAt
+                    ? item.applicant.createdAt.split("T")[0]
+                    : "N/A"}
+                </TableCell>
+
                 <TableCell className="float-right cursor-pointer">
                   <Popover>
                     <PopoverTrigger>

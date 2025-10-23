@@ -163,16 +163,7 @@ const Signup = () => {
               </div>
             </RadioGroup>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-2 sm:mt-0">
-              <Label>Profile</Label>
-              <Input
-                accept="image/*"
-                type="file"
-                name="file"
-                onChange={changeFile}
-                className="cursor-pointer w-full sm:w-auto text-sm"
-              />
-            </div>
+            
           </div>
 
           {/* Submit Button */}
