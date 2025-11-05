@@ -1,24 +1,39 @@
-import { setAllAppliedJobs } from '@/redux/jobSlice';
-import { APPLICATION_API_END_POINT } from '@/utils/constant';
-import axios from 'axios'
+// frontend/src/hooks/useGetAppliedJobs.js
 import { useEffect } from "react";
-import { useDispatch } from 'react-redux';
-const useGetAppliedJobs = () => {
-    const dispatch = useDispatch();
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { setAllAppliedJobs } from "@/redux/jobSlice";
+import { APPLICATION_API_END_POINT } from "@/utils/constant";
 
-    useEffect(()=>{
-        const fetchAppliedJobs = async () => {
-            try {
-                const res = await axios.get(`${APPLICATION_API_END_POINT}/get`, {withCredentials:true});
-                console.log(res.data);
-                if(res.data.success){
-                    dispatch(setAllAppliedJobs(res.data.application));
-                }
-            } catch (error) {
-                console.log(error);
-            }
+const useGetAppliedJobs = (jobId) => {
+  const dispatch = useDispatch();
+  const { searchedQuery } = useSelector((store) => store.job);
+
+  useEffect(() => {
+    if (!jobId) return;
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const res = await axios.get(
+          `${APPLICATION_API_END_POINT}/${jobId}/applicants`,
+          { withCredentials: true }
+        );
+
+        // ✅ Defensive check added
+        if (res.data.success && Array.isArray(res.data.applicants)) {
+          dispatch(setAllAppliedJobs(res.data.applicants));
+        } else {
+          dispatch(setAllAppliedJobs([])); // fallback if undefined
         }
-        fetchAppliedJobs();
-    },[])
+      } catch (error) {
+        console.error("Error fetching applied jobs:", error);
+        dispatch(setAllAppliedJobs([]));
+      }
+    };
+
+    fetchAppliedJobs();
+  }, [jobId, searchedQuery]); // keep searchedQuery if needed
+
 };
+
 export default useGetAppliedJobs;
