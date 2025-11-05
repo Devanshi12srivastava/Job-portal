@@ -18,11 +18,15 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 const corsOption={
-    origin:['http://localhost:5173',
-   "https://job-portal-rho-teal.vercel.app"],
+    origin:'http://localhost:5173',
     credentials:true
 };
-app.use(cors(corsOption));
+app.use(cors({
+  origin: "https://job-portal-rho-teal.vercel.app/",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 const PORT=process.env.PORT || 3000;
 
 app.use("/api/v1/user",userRoute);

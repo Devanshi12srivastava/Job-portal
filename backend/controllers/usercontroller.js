@@ -93,7 +93,7 @@ export const login = async (req, res) => {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true, // ✅ typo fixed (httpsOnly → httpOnly)
          secure: true,       // HTTPS required (Render + Vercel both HTTPS)
-    sameSite: "none"
+    
       })
       .json({
         message: `Welcome back ${user.fullname}`,
