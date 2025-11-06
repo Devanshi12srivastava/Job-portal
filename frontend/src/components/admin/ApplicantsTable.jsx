@@ -19,6 +19,8 @@ const shortlistingStatus = ["Accepted", "Rejected"];
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
+  console.log("Applicants in Redux 👉", applicants);
+
 
   const statusHandler = async (status, id) => {
     try {
