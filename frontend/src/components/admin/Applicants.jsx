@@ -24,7 +24,7 @@ const Applicants = () => {
         console.log("🟢 API Response:", res.data);
         if (res.data.success) {
          
-       dispatch(setAllApplicants({ applications: res?.data?.job?.applications?.applicant }));
+       dispatch(setAllApplicants({ applications: res?.data?.job?.applications }));
 
         }
       } catch (error) {
