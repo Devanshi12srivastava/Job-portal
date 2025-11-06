@@ -43,9 +43,7 @@ const ApplicantsTable = () => {
     }
   };
 
-  // 🧠 Data fix based on your console structure
-  // applicants = { success: true, application: [ {...}, {...} ] }
-  const applications = applicants?.application || [];
+  const applications = applicants?.applications || [];
 
   return (
     <div>
@@ -63,9 +61,9 @@ const ApplicantsTable = () => {
         </TableHeader>
 
         <TableBody>
-          {Array.isArray(applications) && applications.length > 0 ? (
-            applications.map((item) => (
-              <TableRow key={item._id}>
+          {Array.isArray(applications) && applications?.length > 0 ? (
+            applications?.map((item) => (
+              <TableRow key={item?._id}>
                 <TableCell className="text-left">
                   {item?.applicant?.fullname || "N/A"}
                 </TableCell>
@@ -79,11 +77,11 @@ const ApplicantsTable = () => {
                   {item?.applicant?.profile?.resume ? (
                     <a
                       className="text-blue-600 cursor-pointer"
-                      href={item.applicant.profile.resume}
+                      href={item?.applicant?.profile.resume}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item.applicant.profile.resumeOriginalName ||
+                      {item.applicant?.profile?.resumeOriginalName ||
                         "View Resume"}
                     </a>
                   ) : (
