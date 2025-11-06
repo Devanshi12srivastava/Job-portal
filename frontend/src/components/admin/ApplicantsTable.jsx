@@ -1,47 +1,111 @@
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
+import axios from "axios";
+import { APPLICATION_API_END_POINT } from "@/utils/constant";
+
+const shortlistingStatus = ["Accepted", "Rejected"];
 
 const ApplicantsTable = () => {
-  const { applicants } = useSelector((state) => state.application);
+  const { applicants } = useSelector((store) => store.application);
 
-  console.log("🟣 applicants from Redux:", applicants);
-
-  if (!applicants || !Array.isArray(applicants.applications)) {
-    return <p>Loading applicants...</p>;
-  }
-
-  const data = applicants.applications;
+  const statusHandler = async (status, id) => {
+    try {
+      axios.defaults.withCredentials = true;
+      const res = await axios.post(
+        `${APPLICATION_API_END_POINT}/status/${id}/update`,
+        { status }
+      );
+      if (res.data.success) toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold mb-4">Applicants List</h2>
+    <div>
+      <Table>
+        <TableCaption>A list of your recent applied users</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Full Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Contact</TableHead>
+            <TableHead>Resume</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
 
-      {data.length === 0 ? (
-        <p>No applicants yet</p>
-      ) : (
-        <table className="min-w-full border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Email</th>
-              <th className="p-2 border">Phone</th>
-              <th className="p-2 border">Bio</th>
-              <th className="p-2 border">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((app, index) => (
-              <tr key={index} className="border-b">
-                <td className="p-2 border">{app.applicant?.fullname}</td>
-                <td className="p-2 border">{app.applicant?.email}</td>
-                <td className="p-2 border">{app.applicant?.phonenumber}</td>
-                <td className="p-2 border">{app.applicant?.profile?.bio}</td>
-                <td className="p-2 border">{app.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+        <TableBody>
+          {Array.isArray(applicants?.applications) &&
+          applicants.applications.length > 0 ? (   // ✅ correct
+            applicants.applications.map((item) => (  // ✅ plural
+              <TableRow key={item._id}>
+                <TableCell>{item?.applicant?.fullname || "N/A"}</TableCell>
+                <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
+                <TableCell>{item?.applicant?.phonenumber || "N/A"}</TableCell>
+                <TableCell>
+                  {item?.applicant?.profile?.resume ? (
+                    <a
+                      className="text-blue-600 cursor-pointer"
+                      href={item?.applicant?.profile?.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item?.applicant?.profile?.resumeOriginalName ||
+                        "View Resume"}
+                    </a>
+                  ) : (
+                    <span>NA</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {item?.createdAt
+                    ? item.createdAt.split("T")[0]
+                    : "N/A"}
+                </TableCell>
+
+                <TableCell className="float-right cursor-pointer">
+                  <Popover>
+                    <PopoverTrigger>
+                      <MoreHorizontal />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-32">
+                      {shortlistingStatus.map((status, index) => (
+                        <div
+                          onClick={() => statusHandler(status, item?._id)}
+                          key={index}
+                          className="flex w-fit items-center my-2 cursor-pointer hover:font-medium"
+                        >
+                          <span>{status}</span>
+                        </div>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan="6" className="text-center py-6">
+                No applicants yet
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };
