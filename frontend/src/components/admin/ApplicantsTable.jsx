@@ -42,6 +42,9 @@ const ApplicantsTable = () => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
+
+  // 🧠 Data fix based on your console structure
+  // applicants = { success: true, application: [ {...}, {...} ] }
   const applications = applicants?.application || [];
 
   return (
@@ -59,33 +62,56 @@ const ApplicantsTable = () => {
           </TableRow>
         </TableHeader>
 
-  <TableBody>
-          {applications.length > 0 ? (
+        <TableBody>
+          {Array.isArray(applications) && applications.length > 0 ? (
             applications.map((item) => (
               <TableRow key={item._id}>
-                <TableCell>{item?.applicant?.fullname || "N/A"}</TableCell>
-                <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
-                <TableCell>{item?.applicant?.phonenumber || "N/A"}</TableCell>
-                <TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.fullname || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.email || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.phonenumber || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
                   {item?.applicant?.profile?.resume ? (
                     <a
+                      className="text-blue-600 cursor-pointer"
                       href={item.applicant.profile.resume}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600"
                     >
-                      {item.applicant.profile.resumeOriginalName || "View Resume"}
+                      {item.applicant.profile.resumeOriginalName ||
+                        "View Resume"}
                     </a>
                   ) : (
-                    "NA"
+                    <span>NA</span>
                   )}
                 </TableCell>
-                <TableCell>
-                  {item?.applicant?.createdAt
-                    ? item.applicant.createdAt.split("T")[0]
-                    : "N/A"}
+                <TableCell className="text-left">
+                  {item?.createdAt ? item.createdAt.split("T")[0] : "N/A"}
                 </TableCell>
-                <TableCell className="text-right">{item.status}</TableCell>
+
+                <TableCell className="float-right cursor-pointer">
+                  <Popover>
+                    <PopoverTrigger>
+                      <MoreHorizontal />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-32">
+                      {shortlistingStatus.map((status, index) => (
+                        <div
+                          onClick={() => statusHandler(status, item._id)}
+                          key={index}
+                          className="flex w-fit items-center my-2 cursor-pointer hover:font-medium"
+                        >
+                          <span>{status}</span>
+                        </div>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
               </TableRow>
             ))
           ) : (
