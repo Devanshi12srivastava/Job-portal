@@ -21,24 +21,26 @@ const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
 
   const statusHandler = async (status, id) => {
+    console.log("called");
     try {
       axios.defaults.withCredentials = true;
       const res = await axios.post(
         `${APPLICATION_API_END_POINT}/status/${id}/update`,
         { status }
       );
-      if (res.data.success) toast.success(res.data.message);
+      console.log(res);
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response.data.message);
     }
   };
-
-  const applications = applicants?.applications || []; // ✅ Default empty array
 
   return (
     <div>
       <Table>
-        <TableCaption>A list of your recent applied users</TableCaption>
+        <TableCaption>A list of your recent applied user</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>FullName</TableHead>
@@ -50,13 +52,13 @@ const ApplicantsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {applications.length > 0 ? (
-            applications.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell>{item?.applicant?.fullname}</TableCell>
-                <TableCell>{item?.applicant?.email}</TableCell>
-                <TableCell>{item?.applicant?.phonenumber}</TableCell>
-                <TableCell>
+          {applicants &&
+            applicants?.applications?.map((item) => (
+              <tr key={item._id}>
+                <TableCell className="text-left">{item?.applicant?.fullname}</TableCell>
+                <TableCell className="text-left">{item?.applicant?.email}</TableCell>
+                <TableCell className="text-left">{item?.applicant?.phonenumber}</TableCell>
+                <TableCell className="text-left">
                   {item.applicant?.profile?.resume ? (
                     <a
                       className="text-blue-600 cursor-pointer"
@@ -64,48 +66,43 @@ const ApplicantsTable = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item?.applicant?.profile?.resumeOriginalName || "View"}
+                      {item?.applicant?.profile?.resumeOriginalName}
                     </a>
                   ) : (
-                    "N/A"
+                    <span>NA</span>
                   )}
                 </TableCell>
-                <TableCell>
-                  {item?.createdAt
-                    ? item.createdAt.split("T")[0]
+                <TableCell className="text-left">
+                  {item?.applicant?.createdAt
+                    ? item.applicant.createdAt.split("T")[0]
                     : "N/A"}
                 </TableCell>
+
                 <TableCell className="float-right cursor-pointer">
                   <Popover>
                     <PopoverTrigger>
                       <MoreHorizontal />
                     </PopoverTrigger>
                     <PopoverContent className="w-32">
-                      {shortlistingStatus.map((status, index) => (
-                        <div
-                          key={index}
-                          onClick={() => statusHandler(status, item?._id)}
-                          className="my-2 cursor-pointer"
-                        >
-                          {status}
-                        </div>
-                      ))}
+                      {shortlistingStatus.map((status, index) => {
+                        return (
+                          <div
+                            onClick={() => statusHandler(status, item?._id)}
+                            key={index}
+                            className="flex w-fit items-center my-2 cursor-pointer"
+                          >
+                            <span>{status}</span>
+                          </div>
+                        );
+                      })}
                     </PopoverContent>
                   </Popover>
                 </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan="6" className="text-center py-4 text-gray-500">
-                No applicants found
-              </TableCell>
-            </TableRow>
-          )}
+              </tr>
+            ))}
         </TableBody>
       </Table>
     </div>
   );
 };
-
 export default ApplicantsTable;
