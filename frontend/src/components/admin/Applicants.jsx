@@ -23,8 +23,9 @@ const Applicants = () => {
         );
         console.log("🟢 API Response:", res.data);
         if (res.data.success) {
-          // 👇 yahan bhi correct key use karo
-          dispatch(setAllApplicants(res.data));
+         
+       dispatch(setAllApplicants({ applications: res.data.job.applications }));
+
         }
       } catch (error) {
         console.log("❌ Fetch applicants error:", error);
