@@ -92,7 +92,8 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true, // ✅ typo fixed (httpsOnly → httpOnly)
-         secure: true,       // HTTPS required (Render + Vercel both HTTPS)
+         secure: true, 
+         sameSite: "None"      // HTTPS required (Render + Vercel both HTTPS)
     
       })
       .json({

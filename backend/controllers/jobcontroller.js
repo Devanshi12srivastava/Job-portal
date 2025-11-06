@@ -105,10 +105,7 @@ export const applyJob = async (req, res) => {
   try {
     const { jobId, userEmail, userName } = req.body;
 
-    // (Optional) Save application to DB
-    // await JobApplication.create({ jobId, userEmail, userName });
-
-    // Send confirmation email
+   
     const subject = "Job Application Received";
     const html = `
       <h2>Hello ${userName},</h2>

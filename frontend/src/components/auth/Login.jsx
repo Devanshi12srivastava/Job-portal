@@ -22,30 +22,40 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-        headers: { "content-Type": "application/json" },
+ const submitHandler = async (e) => {
+  e.preventDefault();
+  try {
+    dispatch(setLoading(true));
+
+    const res = await axios.post(
+      `${USER_API_END_POINT}/login`,
+      input,
+      {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
-      });
-      if (res.data.success) {
-        dispatch(setUser(res.data.user));
-        toast.success(res.data.message);
-        navigate("/");
       }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      dispatch(setLoading(false));
+    );
+
+    if (res.data.success) {
+      dispatch(setUser(res.data.user));
+      toast.success(res.data.message);
+      navigate("/"); // auto redirect
     }
-  };
+  } catch (error) {
+    console.log(error);
+    toast.error(error.response?.data?.message || "Something went wrong");
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+useEffect(() => {
+  if (user) navigate("/"); // ✅ dependency not strictly needed, but better:
+}, [user]);
 
   useEffect(() => {
     if (user) navigate("/");
-  }, []);
+  }, [user]);
 
   return (
     <div>
