@@ -19,9 +19,11 @@ const shortlistingStatus = ["Accepted", "Rejected"];
 console.log("✅ ApplicantsTable component mounted");
 
 const ApplicantsTable = () => {
-  const { applicants } = useSelector((store) => store.application);
- console.log("🟢 Redux store snapshot:", store);
-console.log("🟠 applicants:", applicants);
+ console.log("✅ Component mounted");
+console.log("🧩 before useSelector");
+const { applicants } = useSelector((store) => store.application);
+console.log("🟢 after useSelector", applicants);
+console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
 
 
   const statusHandler = async (status, id) => {
