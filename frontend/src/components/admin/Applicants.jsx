@@ -10,7 +10,8 @@ import axios from "axios";
 const Applicants = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const {applicants}=useSelector(store=>store.application)
+  const { applicants } = useSelector((store) => store.application);
+
   useEffect(() => {
     const fetchAllApplicants = async () => {
       try {
@@ -20,22 +21,27 @@ const Applicants = () => {
             withCredentials: true,
           }
         );
-        console.log(res.data)
+        console.log("🟢 API Response:", res.data);
         if (res.data.success) {
-          dispatch(setAllApplicants(res.data.job));
+          // 👇 yahan bhi correct key use karo
+          dispatch(setAllApplicants(res.data));
         }
       } catch (error) {
-        console.log(error);
+        console.log("❌ Fetch applicants error:", error);
       }
     };
     fetchAllApplicants();
-  }, []);
+  }, [params.id, dispatch]);
+
+  const applications = applicants?.application || []; // ✅ safe access
 
   return (
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto">
-        <h1 className="font-bold text-xl my-5">Applicant {applicants.applications.length}</h1>
+        <h1 className="font-bold text-xl my-5">
+          Applicants ({applications.length})
+        </h1>
         <ApplicantsTable />
       </div>
     </div>

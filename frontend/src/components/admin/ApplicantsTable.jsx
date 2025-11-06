@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,15 +16,17 @@ import axios from "axios";
 import { APPLICATION_API_END_POINT } from "@/utils/constant";
 
 const shortlistingStatus = ["Accepted", "Rejected"];
-console.log("✅ ApplicantsTable component mounted");
 
 const ApplicantsTable = () => {
- console.log("✅ Component mounted");
-console.log("🧩 before useSelector");
-const { applicants } = useSelector((store) => store.application);
-console.log("🟢 after useSelector", applicants);
-console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
+  // ✅ Mount check
+  useEffect(() => {
+    console.log("✅ Component mounted (ApplicantsTable)");
+  }, []);
 
+  console.log("🧩 Before useSelector");
+  const { applicants } = useSelector((store) => store.application);
+  console.log("🟢 After useSelector:", applicants);
+  console.log("🌐 API Endpoint 👉", APPLICATION_API_END_POINT);
 
   const statusHandler = async (status, id) => {
     try {
@@ -40,6 +42,7 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
+  const applications = applicants?.application || [];
 
   return (
     <div>
@@ -57,9 +60,8 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
         </TableHeader>
 
         <TableBody>
-          {Array.isArray(applicants?.applications) &&
-          applicants.applications.length > 0 ? (
-            applicants.application.map((item) => (
+          {Array.isArray(applications) && applications.length > 0 ? (
+            applications.map((item) => (
               <TableRow key={item._id}>
                 <TableCell className="text-left">
                   {item?.applicant?.fullname || "N/A"}
@@ -74,11 +76,11 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
                   {item?.applicant?.profile?.resume ? (
                     <a
                       className="text-blue-600 cursor-pointer"
-                      href={item?.applicant?.profile?.resume}
+                      href={item.applicant.profile.resume}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item?.applicant?.profile?.resumeOriginalName ||
+                      {item.applicant.profile.resumeOriginalName ||
                         "View Resume"}
                     </a>
                   ) : (
@@ -86,9 +88,7 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
                   )}
                 </TableCell>
                 <TableCell className="text-left">
-                  {item?.applicant?.createdAt
-                    ? item.applicant.createdAt.split("T")[0]
-                    : "N/A"}
+                  {item?.createdAt ? item.createdAt.split("T")[0] : "N/A"}
                 </TableCell>
 
                 <TableCell className="float-right cursor-pointer">
@@ -99,7 +99,7 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
                     <PopoverContent className="w-32">
                       {shortlistingStatus.map((status, index) => (
                         <div
-                          onClick={() => statusHandler(status, item?._id)}
+                          onClick={() => statusHandler(status, item._id)}
                           key={index}
                           className="flex w-fit items-center my-2 cursor-pointer hover:font-medium"
                         >
