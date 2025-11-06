@@ -8,30 +8,42 @@ import { setAllApplicants } from "@/redux/applicationSlice";
 import axios from "axios";
 
 const Applicants = () => {
+  const params = useParams();
   const dispatch = useDispatch();
-
-  const fetchApplicants = async () => {
-    try {
-      const res = await axios.get("/api/v1/job/get-job-applicants");
-      console.log("📦 Full API response:", res.data);
-
-      if (res.data.success) {
-        const applications = res.data.job?.applications || [];
-        console.log("✅ Dispatching applications:", applications);
-        dispatch(setAllApplicants({ applications }));
-      }
-    } catch (error) {
-      console.error("❌ Error fetching applicants:", error);
-    }
-  };
+  const { applicants } = useSelector((store) => store.application);
 
   useEffect(() => {
-    fetchApplicants();
-  }, []);
+    const fetchAllApplicants = async () => {
+      try {
+        const res = await axios.get(
+          `${APPLICATION_API_END_POINT}/${params.id}/applicants`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("🟢 API Response:", res.data);
+        if (res.data.success) {
+          // 👇 yahan bhi correct key use karo
+          dispatch(setAllApplicants(res.data));
+        }
+      } catch (error) {
+        console.log("❌ Fetch applicants error:", error);
+      }
+    };
+    fetchAllApplicants();
+  }, [params.id, dispatch]);
+
+  const applications = applicants?.application || []; // ✅ safe access
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Applicants</h2>
+    <div>
+      <Navbar />
+      <div className="max-w-7xl mx-auto">
+        <h1 className="font-bold text-xl my-5">
+          Applicants ({applications.length})
+        </h1>
+        <ApplicantsTable />
+      </div>
     </div>
   );
 };
