@@ -16,10 +16,12 @@ import axios from "axios";
 import { APPLICATION_API_END_POINT } from "@/utils/constant";
 
 const shortlistingStatus = ["Accepted", "Rejected"];
+console.log("✅ ApplicantsTable component mounted");
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
-  console.log("Applicants in Redux 👉", applicants);
+ console.log("🟢 Redux store snapshot:", store);
+console.log("🟠 applicants:", applicants);
 
 
   const statusHandler = async (status, id) => {
