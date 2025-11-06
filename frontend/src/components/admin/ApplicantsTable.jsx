@@ -59,7 +59,7 @@ console.log("API Endpoint 👉", APPLICATION_API_END_POINT);
         <TableBody>
           {Array.isArray(applicants?.applications) &&
           applicants.applications.length > 0 ? (
-            applicants.applications.map((item) => (
+            applicants.application.map((item) => (
               <TableRow key={item._id}>
                 <TableCell className="text-left">
                   {item?.applicant?.fullname || "N/A"}
