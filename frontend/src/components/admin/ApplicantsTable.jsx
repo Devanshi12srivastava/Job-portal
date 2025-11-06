@@ -21,29 +21,27 @@ const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
 
   const statusHandler = async (status, id) => {
-    console.log("called");
     try {
       axios.defaults.withCredentials = true;
       const res = await axios.post(
         `${APPLICATION_API_END_POINT}/status/${id}/update`,
         { status }
       );
-      console.log(res);
       if (res.data.success) {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
   return (
     <div>
       <Table>
-        <TableCaption>A list of your recent applied user</TableCaption>
+        <TableCaption>A list of your recent applied users</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>FullName</TableHead>
+            <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Contact</TableHead>
             <TableHead>Resume</TableHead>
@@ -51,22 +49,31 @@ const ApplicantsTable = () => {
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {applicants &&
-            applicants?.applications?.map((item) => (
-              <tr key={item._id}>
-                <TableCell className="text-left">{item?.applicant?.fullname}</TableCell>
-                <TableCell className="text-left">{item?.applicant?.email}</TableCell>
-                <TableCell className="text-left">{item?.applicant?.phonenumber}</TableCell>
+          {Array.isArray(applicants?.applications) &&
+          applicants.applications.length > 0 ? (
+            applicants.applications.map((item) => (
+              <TableRow key={item._id}>
                 <TableCell className="text-left">
-                  {item.applicant?.profile?.resume ? (
+                  {item?.applicant?.fullname || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.email || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.phonenumber || "N/A"}
+                </TableCell>
+                <TableCell className="text-left">
+                  {item?.applicant?.profile?.resume ? (
                     <a
                       className="text-blue-600 cursor-pointer"
                       href={item?.applicant?.profile?.resume}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item?.applicant?.profile?.resumeOriginalName}
+                      {item?.applicant?.profile?.resumeOriginalName ||
+                        "View Resume"}
                     </a>
                   ) : (
                     <span>NA</span>
@@ -84,25 +91,31 @@ const ApplicantsTable = () => {
                       <MoreHorizontal />
                     </PopoverTrigger>
                     <PopoverContent className="w-32">
-                      {shortlistingStatus.map((status, index) => {
-                        return (
-                          <div
-                            onClick={() => statusHandler(status, item?._id)}
-                            key={index}
-                            className="flex w-fit items-center my-2 cursor-pointer"
-                          >
-                            <span>{status}</span>
-                          </div>
-                        );
-                      })}
+                      {shortlistingStatus.map((status, index) => (
+                        <div
+                          onClick={() => statusHandler(status, item?._id)}
+                          key={index}
+                          className="flex w-fit items-center my-2 cursor-pointer hover:font-medium"
+                        >
+                          <span>{status}</span>
+                        </div>
+                      ))}
                     </PopoverContent>
                   </Popover>
                 </TableCell>
-              </tr>
-            ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan="6" className="text-center py-6">
+                No applicants yet
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
   );
 };
+
 export default ApplicantsTable;
