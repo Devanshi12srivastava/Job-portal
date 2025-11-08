@@ -22,3 +22,5 @@ For Recruiters
 👀 View all applicants for each job
 
 📊 Dashboard for managing listings
+
+Live:- http://job-portal-rho-teal.vercel.app
